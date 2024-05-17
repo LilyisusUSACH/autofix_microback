@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
-public class TestController {
+public class ReparationController{
     @Autowired
     ReparationService reparationService;
     @GetMapping("/")
@@ -27,7 +27,7 @@ public class TestController {
         Optional<Reparation> reparation = reparationService.findReparationById(id);
         if(reparation.isPresent())
             return new ResponseEntity<>(reparation.get(), HttpStatus.OK);
-        return new ResponseEntity<>("No hay ninguna entidad con ese ID",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("No hay ninguna reparacion con ese ID",HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/{id}")
@@ -35,6 +35,6 @@ public class TestController {
         Reparation reparationResult = reparationService.updateReparation(reparation);
         if(reparationResult!=null)
             return new ResponseEntity<>(reparationResult, HttpStatus.OK);
-        return new ResponseEntity<>("No hay ninguna entidad con ese ID",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("No hay ninguna reparacion con ese ID",HttpStatus.NOT_FOUND);
     }
 }
