@@ -21,6 +21,8 @@ spring:
           uri: lb://micro1
           predicates:
             - Path=/micro1/**
+          filters:
+            - StripPrefix=1
         - id: micro2
           uri: lb://micro2
           predicates:
