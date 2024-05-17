@@ -26,7 +26,7 @@ spring:
         - id: micro2
           uri: lb://micro2
           predicates:
-            - Path=/micro2/**
+            - Path=/inforep/**
         - id: micro3
           uri: lb://micro3
           predicates:
