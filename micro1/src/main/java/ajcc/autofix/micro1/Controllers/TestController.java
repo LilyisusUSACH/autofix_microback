@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin("*")
 public class TestController {
 
-    @GetMapping("/")
+    @GetMapping("/hello")
     public ResponseEntity<?> a(){
         return ResponseEntity.ok("Correcto");
     }

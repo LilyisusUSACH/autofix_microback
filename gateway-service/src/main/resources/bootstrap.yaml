@@ -9,7 +9,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: 'gateway,*'
   endpoint:
+    gateway:
+      enabled: true
     health:
       show-details: always

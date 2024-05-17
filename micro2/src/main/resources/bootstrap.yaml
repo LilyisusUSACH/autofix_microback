@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: micro2
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8081
+  datasource:
+    url: jdbc:postgresql://localhost:5432/autofix_micro2
+    username: postgres
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
