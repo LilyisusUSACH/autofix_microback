@@ -24,9 +24,11 @@ spring:
           filters:
             - StripPrefix=1
         - id: micro2
-          uri: lb://micro2
+          uri: lb://inforep
           predicates:
             - Path=/inforep/**
+          filters:
+            - StripPrefix=1
         - id: micro3
           uri: lb://micro3
           predicates:

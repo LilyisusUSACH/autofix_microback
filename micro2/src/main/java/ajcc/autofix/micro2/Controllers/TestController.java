@@ -18,7 +18,7 @@ public class TestController {
     @GetMapping("/")
     public ResponseEntity<?> getRepas(){
         List<Reparation> reparations = reparationService.getReparations();
-        if(!reparations.isEmpty())
+        if(reparations.isEmpty())
             return new ResponseEntity<>("No hay reparaciones", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(reparations, HttpStatus.OK);
     }
