@@ -11,8 +11,13 @@ eureka:
     hostname: localhost
 
 spring:
+  application:
+    name: gateway-service
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
         - id: micro1
           uri: lb://micro1
@@ -20,10 +25,10 @@ spring:
             - Path=/micro1/**
           filters:
             - StripPrefix=1
-        - id: micro2
-          uri: lb://micro2
+        - id: MICRO2
+          uri: lb://MICRO2
           predicates:
-            - Path=/micro2/**
+            - Path=/microservicio2/**
           filters:
             - StripPrefix=1
         - id: micro3
