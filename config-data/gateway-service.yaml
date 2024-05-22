@@ -17,7 +17,7 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: MICRO1
+        - id: micro1
           uri: lb://micro1
           predicates:
             - Path=/micro1/**
@@ -26,8 +26,8 @@ spring:
         - id: MICRO2
           uri: lb://micro2
           predicates:
-            - Path=/micro2/**
-        - id: MICRO3
+            - Path=/MICRO2/**
+        - id: micro3
           uri: lb://micro3
           predicates:
             - Path=/micro3/**
