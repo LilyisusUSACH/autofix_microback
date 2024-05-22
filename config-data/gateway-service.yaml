@@ -13,6 +13,9 @@ eureka:
 spring:
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
         - id: micro1
           uri: lb://micro1
