@@ -17,17 +17,17 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: micro1
+        - id: MICRO1
           uri: lb://micro1
           predicates:
             - Path=/micro1/**
           filters:
             - StripPrefix=1
-        - id: micro2
+        - id: MICRO2
           uri: lb://micro2
           predicates:
             - Path=/micro2/**
-        - id: micro3
+        - id: MICRO3
           uri: lb://micro3
           predicates:
             - Path=/micro3/**
