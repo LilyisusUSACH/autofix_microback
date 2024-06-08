@@ -35,3 +35,5 @@ spring:
           uri: lb://MICRO3
           predicates:
             - Path=/recibos/**
+          filters:
+            - StripPrefix=1
