@@ -1,9 +1,8 @@
 package ajcc.autofix.micro3.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,5 +24,20 @@ public class Bono {
 
     private int amount;
 
-    private Long receiptId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "receipt_id")
+    @JsonIgnore
+    private Receipt receipt;
+
+    @JsonGetter
+    private Long receiptId(){
+        if(receipt != null) return receipt.getId();
+        return null;
+    }
+
+    public Bono(String marca, int amount) {
+        this.marca = marca;
+        this.amount = amount;
+        this.usado = false;
+    }
 }

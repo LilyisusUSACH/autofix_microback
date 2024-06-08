@@ -22,16 +22,16 @@ spring:
         - id: micro1
           uri: lb://micro1
           predicates:
-            - Path=/micro1/**
+            - Path=/vehiculos/**
           filters:
             - StripPrefix=1
         - id: MICRO2
           uri: lb://MICRO2
           predicates:
-            - Path=/microservicio2/**
+            - Path=/reparaciones/**
           filters:
             - StripPrefix=1
-        - id: micro3
-          uri: lb://micro3
+        - id: MICRO3
+          uri: lb://MICRO3
           predicates:
-            - Path=/micro3/**
+            - Path=/recibos/**

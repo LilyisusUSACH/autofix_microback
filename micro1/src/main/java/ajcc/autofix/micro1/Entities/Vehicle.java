@@ -26,7 +26,7 @@ public class Vehicle {
 
     private String modelo;
 
-    private int añofab;
+    private int anofab;
 
     private int nAsientos;
 

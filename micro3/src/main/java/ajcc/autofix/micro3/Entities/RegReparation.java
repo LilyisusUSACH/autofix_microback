@@ -1,16 +1,16 @@
 package ajcc.autofix.micro3.Entities;
 
 import ajcc.autofix.micro3.Models.Reparation;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +20,18 @@ public class RegReparation{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String patente;
+
+    @ManyToOne()
+    @JoinColumn(name = "receipt")
+    @JsonIdentityReference(alwaysAsId = true)
+    private Receipt receipt;
+
     private Long reparationId;
-    private LocalDateTime Fecha;
+
+    @Transient
+    private Reparation reparation;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime completedAt;
     private int amount;
 }
