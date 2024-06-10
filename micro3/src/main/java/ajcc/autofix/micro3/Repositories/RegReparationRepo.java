@@ -14,6 +14,8 @@ public interface RegReparationRepo extends JpaRepository<RegReparation, Long> {
 
     List<RegReparation> findAllByPatente(String patente);
 
+    List<RegReparation> findAllByCompletedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
     Optional<RegReparation> findFirstByReceiptOrderByCreatedAtDesc(Receipt receipt);
 
     Optional<RegReparation> findFirstByReceiptOrderByCompletedAtDesc(Receipt receipt);

@@ -27,6 +27,15 @@ public class RegReparationController{
         return new ResponseEntity<>(regReparations, HttpStatus.OK);
     }
 
+    @GetMapping("/byDate")
+    public ResponseEntity<?> getReparations(@RequestParam("year") int year, @RequestParam("month") int month){
+        List<RegReparation> regReparations = regReparationService.findRegRepsByInAMonth(month, year);
+        if(regReparations.isEmpty())
+            return new ResponseEntity<>("No hay Reparaciones en ese periodo de tiempo", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(regReparations, HttpStatus.OK);
+    }
+
+
     @GetMapping("/onwork")
     public ResponseEntity<?> getRepOnWork(){
         List<RegReparation> regReparations = regReparationService.getAllRegRepOnWork();

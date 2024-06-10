@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +52,17 @@ public class RegReparationService {
 
     public List<RegReparation> findRegRepsByPatente(String patente){
         List<RegReparation> regReparations = regReparationRepo.findAllByPatente(patente);
+        regReparations.forEach(rep -> {
+            Reparation reparation = restTemplate.getForObject("http://MICRO2/"+rep.getReparationId(),Reparation.class);
+            rep.setReparation(reparation);
+        });
+        return regReparations;
+    }
+    public List<RegReparation> findRegRepsByInAMonth(int month, int year){
+        LocalDateTime startDate = LocalDateTime.of( LocalDate.of(year, month, 1), LocalTime.MIN);
+        LocalDateTime endDate = LocalDateTime.of( LocalDate.of(year, month, YearMonth.of(year, month).lengthOfMonth() ), LocalTime.MAX);
+
+        List<RegReparation> regReparations = regReparationRepo.findAllByCompletedAtBetween(startDate, endDate);
         regReparations.forEach(rep -> {
             Reparation reparation = restTemplate.getForObject("http://MICRO2/"+rep.getReparationId(),Reparation.class);
             rep.setReparation(reparation);

@@ -36,3 +36,9 @@ spring:
             - Path=/recibos/**
           filters:
             - StripPrefix=1
+        - id: MICRO4
+          uri: lb://MICRO4
+          predicates:
+            - Path=/reportes/**
+          filters:
+            - StripPrefix=1
