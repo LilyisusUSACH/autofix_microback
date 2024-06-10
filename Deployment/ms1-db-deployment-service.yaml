@@ -62,7 +62,7 @@ spec:
           - name:  POSTGRES_DB
             valueFrom:
               configMapKeyRef:
-                name:  postgres-configmap
+                name:  postgres-db
                 key: DB_NAME_MS1
           - name:  POSTGRES_USER
             valueFrom:

@@ -19,30 +19,30 @@ spec:
         image: lilyisus/autofix_ms1
         resources:
           limits:
-            memory: "128Mi"
+            memory: "512Mi"
             cpu: "500m"
         env:
           - name:  DB_HOST
             valueFrom:
               configMapKeyRef:
-                name:  postgres-configmap
+                name:  postgres-db
                 key:  DB_HOST_MS1
           - name:  DB_PORT
             valueFrom:
               configMapKeyRef:
-                name:  postgres-configmap
+                name:  postgres-db
                 key:  DB_PORT_MS1
           - name:  DB_NAME
             valueFrom:
               configMapKeyRef:
-                name:  postgres-configmap
+                name:  postgres-db
                 key:  DB_NAME_MS1
           - name:  DB_USER
             valueFrom:
               secretKeyRef:
                 name:  postgres-credential
                 key:  DB_USER
-          - name:  DB_HOST
+          - name:  DB_PASSWORD
             valueFrom:
               secretKeyRef:
                 name:  postgres-credential
