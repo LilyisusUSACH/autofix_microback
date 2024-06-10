@@ -13,4 +13,4 @@ data:
   DB_NAME_MS2: autofix_micro2
   DB_HOST_MS3: ms3-db-service
   DB_PORT_MS3: "5434"
-  DB_NAME_MS4: autofix_micro3
+  DB_NAME_MS3: autofix_micro3

@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ms2-deployment
+  name: ms3-deployment
   labels:
-    app: ms2-deployment
+    app: ms3-deployment
 spec:
   selector:
     matchLabels:
-      app: ms2-deployment
+      app: ms3-deployment
   replicas: 1
   template:
     metadata:
       labels:
-        app: ms2-deployment
+        app: ms3-deployment
     spec:
       containers:
-      - name: autofix-ms2
-        image: lilyisus/autofix_ms2
+      - name: autofix-ms3
+        image: lilyisus/autofix_ms3
         resources:
           limits:
             memory: "512Mi"
@@ -26,17 +26,17 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name:  postgres-db
-                key:  DB_HOST_MS2
+                key:  DB_HOST_MS3
           - name:  DB_PORT
             valueFrom:
               configMapKeyRef:
                 name:  postgres-db
-                key:  DB_PORT_MS2
+                key:  DB_PORT_MS3
           - name:  DB_NAME
             valueFrom:
               configMapKeyRef:
                 name:  postgres-db
-                key:  DB_NAME_MS2
+                key:  DB_NAME_MS3
           - name:  DB_USER
             valueFrom:
               secretKeyRef:
@@ -48,4 +48,4 @@ spec:
                 name:  postgres-credential
                 key:  DB_PASSWORD
         ports:
-        - containerPort: 8091
+        - containerPort: 8092
