@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms4-deployment
+  labels:
+    app: ms4-deployment
+spec:
+  selector:
+    matchLabels:
+      app: ms4-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ms4-deployment
+    spec:
+      containers:
+      - name: autofix-ms4
+        image: lilyisus/autofix_ms4
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+          - name:  DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name:  postgres-db
+                key:  DB_HOST_MS4
+          - name:  DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name:  postgres-db
+                key:  DB_PORT_MS4
+          - name:  DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name:  postgres-db
+                key:  DB_NAME_MS4
+          - name:  DB_USER
+            valueFrom:
+              secretKeyRef:
+                name:  postgres-credential
+                key:  DB_USER
+          - name:  DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name:  postgres-credential
+                key:  DB_PASSWORD
+        ports:
+        - containerPort: 8093

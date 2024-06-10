@@ -41,7 +41,18 @@ public class ReceiptService {
     RestTemplate restTemplate;
 
     public List<Receipt> getAllReceipts(){
-        return receiptRepo.findAll();
+        List<Receipt> receipts = receiptRepo.findAll();
+        receipts.forEach( receipt -> {
+            Vehicle vehicle = restTemplate.getForObject("http://MICRO1/ByPatente?patente="+ receipt.getPatente(), Vehicle.class);
+            receipt.setVehicle(vehicle);
+
+            receipt.getRegReparations().forEach(rep -> {
+                Reparation reparation = restTemplate.getForObject("http://MICRO2/"+rep.getReparationId(),Reparation.class);
+                rep.setReparation(reparation);
+            });
+        });
+
+        return receipts;
     }
 
     public List<Receipt> findAllReceiptsByPatente(String patente){
@@ -49,7 +60,16 @@ public class ReceiptService {
     }
 
     public Optional<Receipt> findReceiptById(Long id){
-        return receiptRepo.findById(id);
+        Receipt receipt = receiptRepo.findById(id).orElseGet(() -> null);
+        if(receipt == null) return Optional.empty();
+        Vehicle vehicle = restTemplate.getForObject("http://MICRO1/ByPatente?patente="+ receipt.getPatente(), Vehicle.class);
+        receipt.setVehicle(vehicle);
+
+        receipt.getRegReparations().forEach(rep -> {
+            Reparation reparation = restTemplate.getForObject("http://MICRO2/"+rep.getReparationId(),Reparation.class);
+            rep.setReparation(reparation);
+        });
+        return Optional.of(receipt);
     }
 
     public Optional<Receipt> findReceiptUnpaidByPatente(String patente){
