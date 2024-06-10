@@ -20,7 +20,7 @@ public class Bono {
 
     private String marca;
 
-    private Boolean usado;
+    private Boolean usado = false;
 
     private int amount;
 
@@ -33,11 +33,5 @@ public class Bono {
     private Long receiptId(){
         if(receipt != null) return receipt.getId();
         return null;
-    }
-
-    public Bono(String marca, int amount) {
-        this.marca = marca;
-        this.amount = amount;
-        this.usado = false;
     }
 }

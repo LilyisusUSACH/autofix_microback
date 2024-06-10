@@ -30,6 +30,8 @@ public class Vehicle {
 
     private int nAsientos;
 
+    private int km;
+
     private ETipo tipo;
 
     private EMotorType motor;

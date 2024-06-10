@@ -34,7 +34,7 @@ public class Receipt {
 
     @ElementCollection
     @Transient
-    private List<Detail> details;
+    private List<Detail> details  = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "bono_id")

@@ -57,12 +57,13 @@ public class RegReparationService {
         return regReparations;
     }
 
-    public Optional<RegReparation> findFirstByDay(Receipt receipt, LocalDate date){
-        LocalDateTime startDay = date.atStartOfDay();
-        LocalDateTime finishDay = date.plusDays(1).atStartOfDay();
-        return regReparationRepo.findFirstByReceiptAndCreatedAtBetween(receipt,startDay, finishDay);//, date);
+    public Optional<RegReparation> findFirstByDay(Receipt receipt){
+        return regReparationRepo.findFirstByReceiptOrderByCreatedAtDesc(receipt);//, date);
     }
 
+    public Optional<RegReparation> findLastByReceipt(Receipt receipt){
+        return regReparationRepo.findFirstByReceiptOrderByCompletedAtDesc(receipt);
+    }
     public int countRepairIn12Month(String patente){
         return regReparationRepo.countByPatenteAndCreatedAtBetween(patente, LocalDateTime.now(), LocalDateTime.now().minusMonths(12));
     }
