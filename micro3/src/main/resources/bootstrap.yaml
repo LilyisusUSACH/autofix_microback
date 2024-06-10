@@ -6,9 +6,9 @@ spring:
       enabled: true
       uri: http://localhost:8081
   datasource:
-    url: jdbc:postgresql://localhost:5432/autofix_micro3
-    username: postgres
-    password: 123456
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
