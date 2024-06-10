@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms1-deployment
+  labels:
+    app: ms1-deployment
+spec:
+  selector:
+    matchLabels:
+      app: ms1-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ms1-deployment
+    spec:
+      containers:
+      - name: autofix-ms1
+        image: lilyisus/autofix_ms1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+          - name:  DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name:  postgres-configmap
+                key:  DB_HOST_MS1
+          - name:  DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name:  postgres-configmap
+                key:  DB_PORT_MS1
+          - name:  DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name:  postgres-configmap
+                key:  DB_NAME_MS1
+          - name:  DB_USER
+            valueFrom:
+              secretKeyRef:
+                name:  postgres-credential
+                key:  DB_USER
+          - name:  DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name:  postgres-credential
+                key:  DB_PASSWORD
+        ports:
+        - containerPort: 8090

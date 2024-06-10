@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-db
+  labels:
+    app: postgres-db
+data:
+  DB_HOST_MS1: ms1-db-service
+  DB_PORT_MS1: "5432"
+  DB_NAME_MS1: autofix_micro1
+  DB_HOST_MS2: ms2-db-service
+  DB_PORT_MS2: "5433"
+  DB_NAME_MS2: autofix_micro2
+  DB_HOST_MS3: ms3-db-service
+  DB_PORT_MS3: "5434"
+  DB_NAME_MS4: autofix_micro3
