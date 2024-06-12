@@ -1,7 +1,5 @@
 package ajcc.autofix.micro4.Models;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

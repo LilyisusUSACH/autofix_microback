@@ -1,20 +1,4 @@
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: ms2-db-pv
-  labels:
-    type: local
-spec:
-  storageClassName: standard
-  capacity:
-    storage: 500M
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-      path: "/data/ms2-db-data"
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: ms2-db-pvc
@@ -25,7 +9,7 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      storage: 500M
+      storage: 1Gi
   accessModes:
     - ReadWriteOnce
 ---
@@ -52,12 +36,12 @@ spec:
       - name: ms2-db-deployment
         image: postgres
         imagePullPolicy: "IfNotPresent"
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
         ports:
         - containerPort: 5432
+        resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
         env:
           - name:  POSTGRES_DB
             valueFrom:
@@ -74,6 +58,8 @@ spec:
               secretKeyRef:
                 name:  postgres-credential
                 key:  DB_PASSWORD
+          - name: PGDATA
+            value: "/var/lib/postgresql/data/pgdata/dbms2"
         volumeMounts:
           - mountPath:  "/var/lib/postgresql/data"
             name:  ms2-db-data
@@ -93,7 +79,7 @@ spec:
   selector:
     app:  ms2-db-deployment
     tier: database
-  type:  LoadBalancer
+  type:  ClusterIP
   ports:
   - port:  5433
     targetPort:  5432

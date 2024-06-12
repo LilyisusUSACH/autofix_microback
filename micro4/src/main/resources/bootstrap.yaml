@@ -1,10 +1,14 @@
 spring:
   application:
     name: micro4
-  cloud:
-    config:
-      enabled: true
-      uri: http://config-service:8081
-  jpa:
-    hibernate:
-      ddl-auto: update
+server:
+  #port: ${PORT:${SERVER_PORT:0}}
+  port: 53520
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://34.95.139.142:8761/eureka/
+  instance:
+    preferIpAddress: true

@@ -17,12 +17,12 @@ spec:
       containers:
         - name: autofix-eureka
           image: lilyisus/autofix_eureka:latest
-          resources:
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
           ports:
             - containerPort: 8761
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
 ---
 apiVersion: v1
 kind: Service

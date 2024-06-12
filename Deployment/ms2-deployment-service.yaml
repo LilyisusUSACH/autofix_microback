@@ -17,10 +17,6 @@ spec:
       containers:
       - name: autofix-ms2
         image: lilyisus/autofix_ms2
-        resources:
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
         env:
           - name:  DB_HOST
             valueFrom:

@@ -19,8 +19,8 @@ spec:
           image: lilyisus/autofix_config:latest
           resources:
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "256Mi"
+              cpu: "200m"
           ports:
             - containerPort: 8081
             
@@ -38,4 +38,4 @@ spec:
     - protocol: TCP
       port: 8081
       targetPort: 8081
-  type: LoadBalancer
+  type: ClusterIP

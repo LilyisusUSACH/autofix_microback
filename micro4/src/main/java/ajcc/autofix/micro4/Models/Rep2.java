@@ -11,7 +11,7 @@ public class Rep2 {
     private float varOneQty;
     private float varOneAmount;
     private Register prevMonth;
-    private float varTwoPerc;
+    private float varTwoQty;
     private float varTwoAmount;
     private Register prevPMonth;
 
@@ -21,17 +21,28 @@ public class Rep2 {
         varOneAmount = 0;
         varOneQty = 0;
         prevMonth = new Register();
-        varTwoPerc = 0;
+        varTwoQty = 0;
         varTwoAmount = 0;
         prevPMonth = new Register();
     }
 
     public void calcFirstMonth(){
-        varOneQty = (month.getCount()*1.0f)/prevMonth.getCount();
-        varOneAmount = (month.getAmount()*1.0f)/prevMonth.getAmount();
+        if (prevMonth.getCount() != 0) {
+            varOneQty = (month.getCount() * 1.0f) / prevMonth.getCount();
+            varOneAmount = (month.getAmount() * 1.0f) / prevMonth.getAmount();
+        }
+        else {
+            varOneQty = month.getCount() * 1.0f;
+            varOneAmount = month.getAmount() * 1.0f;
+        }
     }
     public void calcSectMonth(){
-        varOneQty = (prevMonth.getCount()*1.0f)/prevPMonth.getCount();
-        varOneAmount = (prevMonth.getAmount()*1.0f)/prevPMonth.getAmount();
+        if (prevPMonth.getCount() == 0) {
+            varTwoQty = prevMonth.getCount() * 1.0f;
+            varTwoAmount = prevMonth.getAmount() * 1.0f;
+        } else {
+            varTwoQty = (prevMonth.getCount()*1.0f)/prevPMonth.getCount();
+            varTwoAmount = (prevMonth.getAmount()*1.0f)/prevPMonth.getAmount();
+        }
     }
 }

@@ -15,9 +15,11 @@ public class RepService {
     @Autowired
     RestTemplate restTemplate;
 
-    public HashMap<Long, Rep1> generateRep1(int month, int year){
-        String url = "http://MICRO3/byDate?month="+month+"&year="+year;
+    //String ip = "http://34.151.221.135:8080/";
 
+    public HashMap<Long, Rep1> generateRep1(int month, int year){
+        String url = "http://MICRO3/reparation/byDate?month="+month+"&year="+year;
+        //String url = ip+"recibos/reparation/byDate?month="+month+"&year="+year;
         List<RegReparation> reparations = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -28,6 +30,7 @@ public class RepService {
         HashMap<Long, Rep1> table = new HashMap<>();
         reparations.forEach(rep -> {
             Vehicle vehicle = restTemplate.getForObject("http://MICRO1/ByPatente?patente="+ rep.getPatente(), Vehicle.class);
+            //Vehicle vehicle = restTemplate.getForObject(ip+"vehiculos/ByPatente?patente="+ rep.getPatente(), Vehicle.class);
             if(vehicle == null) return;
             if(table.containsKey(rep.getReparationId())){
                 Rep1 newRep1 = table.get(rep.getReparationId());
@@ -87,61 +90,77 @@ public class RepService {
                             newRep);
             }
         });
-        return null;
+        return table;
     }
 
     public HashMap<Long, Rep2> generateRep2(int month, int year) {
         List<Reparation> repsList = restTemplate.exchange(
                 "http://MICRO2/",
+                //ip + "reparaciones/",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<Reparation>>() {}
+                new ParameterizedTypeReference<List<Reparation>>() {
+                }
         ).getBody();
         HashMap<Long, Rep2> table = new HashMap<>();
-        if(repsList == null || repsList.isEmpty()) return null;
+        if (repsList == null || repsList.isEmpty()) return null;
 
-        repsList.forEach( reparation -> {
+        repsList.forEach(reparation -> {
             table.put(reparation.getId(), new Rep2(reparation.getNombre()));
         });
 
-        String url = "http://MICRO3/byDate?month="+month+"&year="+year;
-        List<RegReparation> reparations = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<RegReparation>>() {}
-        ).getBody();
-        if(reparations == null || reparations.isEmpty()) return null;
-        reparations.forEach( regReparation -> {
+        String url = "http://MICRO3/reparation/byDate?month="+month+"&year="+year;
+        //String url = ip + "recibos/reparation/byDate?month=" + month + "&year=" + year;
+        try {
+            List<RegReparation> reparations = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<RegReparation>>() {
+                    }
+            ).getBody();
+            if (reparations == null || reparations.isEmpty()) return null;
+            reparations.forEach(regReparation -> {
                 table.get(regReparation.getReparationId()).getMonth().add(regReparation.getAmount());
-        });
+            });
+        } catch (Exception e) {
+            System.out.println("Excepcion:" + e.getMessage());
+        }
+        try {
+            String url2 = "http://MICRO3/reparation/byDate?month="+(month-1)+"&year="+year;
+            //String url2 = ip + "recibos/reparation/byDate?month=" + (month - 1) + "&year=" + year;
+            List<RegReparation> reparationsPrev = restTemplate.exchange(
+                    url2,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<RegReparation>>() {
+                    }
+            ).getBody();
+            if (reparationsPrev == null || reparationsPrev.isEmpty()) return null;
+            reparationsPrev.forEach(regReparation -> {
+                table.get(regReparation.getReparationId()).getPrevMonth().add(regReparation.getAmount());
 
-        String url2 = "http://MICRO3/byDate?month="+(month-1)+"&year="+year;
-        List<RegReparation> reparationsPrev = restTemplate.exchange(
-                url2,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<RegReparation>>() {}
-        ).getBody();
-        if(reparationsPrev == null || reparationsPrev.isEmpty()) return null;
-        reparationsPrev.forEach( regReparation -> {
-            table.get(regReparation.getReparationId()).getPrevMonth().add(regReparation.getAmount());
-
-        });
-
-        String url3 = "http://MICRO3/byDate?month="+(month-2)+"&year="+year;
-
-        List<RegReparation> reparationsPrevPrev = restTemplate.exchange(
-                url3,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<RegReparation>>() {}
-        ).getBody();
-        if(reparationsPrevPrev == null || reparationsPrevPrev.isEmpty()) return null;
-        reparationsPrevPrev.forEach( regReparation -> {
-            table.get(regReparation.getReparationId()).getPrevPMonth().add(regReparation.getAmount());
-        });
-
+            });
+        } catch (Exception e) {
+            System.out.println("Excepcion:" + e.getMessage());
+        }
+        String url3 = "http://MICRO3/reparation/byDate?month="+(month-2)+"&year="+year;
+        //String url3 = ip + "recibos/reparation/byDate?month=" + (month - 2) + "&year=" + year;
+        try{
+            List<RegReparation> reparationsPrevPrev = restTemplate.exchange(
+                    url3,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<RegReparation>>() {
+                    }
+            ).getBody();
+            if (reparationsPrevPrev == null || reparationsPrevPrev.isEmpty()) return null;
+            reparationsPrevPrev.forEach(regReparation -> {
+                table.get(regReparation.getReparationId()).getPrevPMonth().add(regReparation.getAmount());
+            });
+        }catch(Exception e){
+            System.out.println("Excepcion:"+e.getMessage());
+        }
         table.forEach( (key, reparation) -> {
             reparation.calcFirstMonth();
             reparation.calcSectMonth();

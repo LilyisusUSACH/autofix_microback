@@ -17,9 +17,5 @@ spec:
       containers:
       - name: autofix-ms4
         image: lilyisus/autofix_ms4
-        resources:
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
         ports:
         - containerPort: 8093
