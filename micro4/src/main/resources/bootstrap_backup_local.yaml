@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: micro4
+server:
+  #port: ${PORT:${SERVER_PORT:0}}
+  port: 53520
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://34.95.139.142:8761/eureka/
+  instance:
+    preferIpAddress: true
