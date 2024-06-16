@@ -79,7 +79,7 @@ spec:
   selector:
     app:  ms1-db-deployment
     tier: database
-  type:  LoadBalancer
+  type:  ClusterIP
   ports:
   - port:  5432
     targetPort:  5432

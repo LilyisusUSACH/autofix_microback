@@ -263,7 +263,7 @@ public class ReceiptService {
         if(regReparation.isEmpty()) return 0;
         int difference = 0;
         if(regReparation.get().getCompletedAt() != null)
-            difference = (int) DAYS.between(regReparation.get().getCompletedAt(), LocalDate.now());
+            difference = (int) DAYS.between(regReparation.get().getCompletedAt(), LocalDateTime.now());
         if(difference == 0){
             return 0;
         }
