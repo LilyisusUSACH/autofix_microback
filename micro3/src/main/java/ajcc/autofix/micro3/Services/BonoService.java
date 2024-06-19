@@ -18,6 +18,11 @@ public class BonoService {
         return bonoRepo.findAll();
     }
 
+    public List<Bono> getAllBonosUsed(){
+        return bonoRepo.findAllByUsadoIsTrue();
+    }
+
+
     public List<Bono> getAllBonosNoUsed(){
         return bonoRepo.findAllByUsadoIsFalse();
     }
@@ -47,6 +52,10 @@ public class BonoService {
 
     public void unUseBono(Receipt receipt){
         Bono bono = receipt.getBono();
+        if(bono == null) {
+            receipt.setBono(null);
+            return;
+        }
         bono.setReceipt(null);
         bono.setUsado(false);
         receipt.setBono(null);

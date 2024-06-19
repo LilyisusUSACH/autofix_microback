@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/bono")
-@CrossOrigin("*")
 public class BonoController {
     @Autowired
     BonoService bonoService;
@@ -24,6 +23,13 @@ public class BonoController {
         return new ResponseEntity<>(bonos, HttpStatus.OK);
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<?> getAllBonosUseds(){
+        List<Bono> bonos = bonoService.getAllBonosUsed();
+        if(bonos.isEmpty())
+            return new ResponseEntity<>("No hay Bonos disponibles", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(bonos, HttpStatus.OK);
+    }
     @GetMapping("/disp")
     public ResponseEntity<?> getAllBonosDisp(){
         List<Bono> bonos = bonoService.getAllBonosNoUsed();

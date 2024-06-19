@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/reparation")
-@CrossOrigin("*")
 public class RegReparationController{
     @Autowired
     RegReparationService regReparationService;
@@ -68,5 +67,10 @@ public class RegReparationController{
     @PutMapping("/{id}")
     public ResponseEntity<?> completeRegRep(@PathVariable Long id){
         return new ResponseEntity<>(regReparationService.completeRegRep(id), HttpStatus.OK);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRegRep(@PathVariable Long id){
+        regReparationService.deleteReparation(id);
+        return new ResponseEntity<>("Reparacion elimina exitosamente", HttpStatus.OK);
     }
 }

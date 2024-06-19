@@ -1,26 +1,25 @@
 package ajcc.autofix.micro3.Services;
 
 import ajcc.autofix.micro3.Entities.Bono;
+import ajcc.autofix.micro3.Entities.FinalDetails;
 import ajcc.autofix.micro3.Entities.Receipt;
 import ajcc.autofix.micro3.Entities.RegReparation;
 import ajcc.autofix.micro3.Enums.EDiscNRep;
-import ajcc.autofix.micro3.Enums.EDiscountsRecharges;
 import ajcc.autofix.micro3.Enums.ERecKm;
 import ajcc.autofix.micro3.Enums.ERecOld;
 import ajcc.autofix.micro3.Models.Detail;
 import ajcc.autofix.micro3.Models.Reparation;
 import ajcc.autofix.micro3.Models.Vehicle;
+import ajcc.autofix.micro3.Repositories.FinalDetailsRepo;
 import ajcc.autofix.micro3.Repositories.ReceiptRepo;
-import ajcc.autofix.micro3.Repositories.RegReparationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.swing.text.html.Option;
+
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static ajcc.autofix.micro3.Constants.Constants.*;
@@ -33,6 +32,9 @@ public class ReceiptService {
 
     @Autowired
     RegReparationService regReparationService;
+
+    @Autowired
+    FinalDetailsRepo finalDetailsRepo;
 
     @Autowired
     BonoService bonoService;
@@ -60,7 +62,7 @@ public class ReceiptService {
     }
 
     public Optional<Receipt> findReceiptById(Long id){
-        Receipt receipt = receiptRepo.findById(id).orElseGet(() -> null);
+        Receipt receipt = receiptRepo.findById(id).orElse(null);
         if(receipt == null) return Optional.empty();
         Vehicle vehicle = restTemplate.getForObject("http://MICRO1/ByPatente?patente="+ receipt.getPatente(), Vehicle.class);
         receipt.setVehicle(vehicle);
@@ -73,13 +75,12 @@ public class ReceiptService {
     }
 
     public Optional<Receipt> findReceiptUnpaidByPatente(String patente){
-        return receiptRepo.findByPatenteAndDeliveredAtIsNotNull(patente);
+        return receiptRepo.findByPatenteAndDeliveredAtIsNull(patente);
     }
 
     public Receipt createReceiptEmpty(String patente){
-        Receipt receipt = new Receipt(null, null, patente, new ArrayList<>(),null, new ArrayList<>(), null, 0, 0);
         //return receiptRepo.save(receipt);
-        return receipt;
+        return new Receipt(null, null, patente, new ArrayList<>(),null, new ArrayList<>(), null, 0, 0);
     }
     public Receipt saveReceipt(Receipt receipt){
         return receiptRepo.saveAndFlush(receipt);
@@ -123,7 +124,11 @@ public class ReceiptService {
         return regReparation;
     }
 
-    public Receipt delivered(Long id){
+    public Receipt delivered(Long id, List<FinalDetails> details){
+        details.forEach(detail -> {
+            detail.setReceiptId(id);
+        });
+        finalDetailsRepo.saveAllAndFlush(details);
         Receipt receipt = findReceiptById(id).orElseThrow();
         receipt.setDeliveredAt(LocalDateTime.now());
         return saveReceipt(receipt);
@@ -131,7 +136,7 @@ public class ReceiptService {
 
     public Receipt calculateTotal(Long id, Long id_bono){
         Receipt receipt = findReceiptById(id).orElseThrow();
-
+        if(receipt.getDeliveredAt() != null) return receipt;
         Vehicle vehicle = restTemplate.getForObject("http://MICRO1/ByPatente?patente="+ receipt.getPatente(), Vehicle.class);
         receipt.setVehicle(vehicle);
 
@@ -147,7 +152,6 @@ public class ReceiptService {
 
         receipt.getDetails().add(new Detail("Suma Reparaciones", sumaRep, 1));
 
-        //TODO
         int discounts = descRepairs(receipt) + descAttDay(receipt);
 
         if(id_bono!=null){
@@ -157,13 +161,13 @@ public class ReceiptService {
                     bonoService.unUseBono(receipt);
                 }
                 discounts += bonoService.useBono(bono.get(),receipt);
-                receipt.getDetails().add(new Detail("Descuento Bono", -1*bono.get().getAmount(), -1));
+                receipt.getDetails().add(new Detail("Descuento Bono", -1*bono.get().getAmount(), (-1f*sumaRep)/bono.get().getAmount()));
             }else if (bono.isEmpty()){
                 bonoService.unUseBono(receipt);
             }
         } else if (receipt.getBono()!=null) {
             discounts += receipt.getBono().getAmount();
-            receipt.getDetails().add(new Detail("Descuento Bono", -1*receipt.getBono().getAmount(), -1));
+            receipt.getDetails().add(new Detail("Descuento Bono", -1*receipt.getBono().getAmount(), (-1f*sumaRep)/receipt.getBono().getAmount()));
         }
 
         int recargos = recKm(receipt) + recOld(receipt) + recPark(receipt);
@@ -210,7 +214,6 @@ public class ReceiptService {
         int km = receipt.getVehicle().getKm();
         int categoria;
         if(km <= 5000){
-            categoria = 0;
             return 0;
         } else if (km <= 12000){
             categoria = 1;
@@ -237,7 +240,6 @@ public class ReceiptService {
         int antiguedad = Year.now().minusYears(receipt.getVehicle().getAnofab()).getValue();
         int categoria;
         if(antiguedad <= 5){
-            categoria = 0;
             return 0;
         } else if (antiguedad <= 10){
             categoria = 1;

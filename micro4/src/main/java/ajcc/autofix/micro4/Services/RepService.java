@@ -18,8 +18,21 @@ public class RepService {
     //String ip = "http://34.151.221.135:8080/";
 
     public HashMap<Long, Rep1> generateRep1(int month, int year){
+        List<Reparation> repsList = restTemplate.exchange(
+                "http://MICRO2/",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Reparation>>() {
+                }
+        ).getBody();
+        HashMap<Long, Rep1> table = new HashMap<>();
+        if (repsList == null || repsList.isEmpty()) return null;
+
+        repsList.forEach(reparation -> {
+            table.put(reparation.getId(), new Rep1(reparation.getNombre()));
+        });
+
         String url = "http://MICRO3/reparation/byDate?month="+month+"&year="+year;
-        //String url = ip+"recibos/reparation/byDate?month="+month+"&year="+year;
         List<RegReparation> reparations = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -27,68 +40,21 @@ public class RepService {
                 new ParameterizedTypeReference<List<RegReparation>>() {}
         ).getBody();
         if(reparations == null || reparations.isEmpty()) return null;
-        HashMap<Long, Rep1> table = new HashMap<>();
+
         reparations.forEach(rep -> {
             Vehicle vehicle = restTemplate.getForObject("http://MICRO1/ByPatente?patente="+ rep.getPatente(), Vehicle.class);
-            //Vehicle vehicle = restTemplate.getForObject(ip+"vehiculos/ByPatente?patente="+ rep.getPatente(), Vehicle.class);
             if(vehicle == null) return;
-            if(table.containsKey(rep.getReparationId())){
-                Rep1 newRep1 = table.get(rep.getReparationId());
-                switch (vehicle.getTipo()) {
-                    case "sedan" -> newRep1.getSedan().add(rep.getAmount());
-                    case "hatchback" -> newRep1.getHatchback().add(rep.getAmount());
-                    case "suv" -> newRep1.getSuv().add(rep.getAmount());
-                    case "pickup" -> newRep1.getPickup().add(rep.getAmount());
-                    case "furgoneta" -> newRep1.getFurgoneta().add(rep.getAmount());
-                    default -> {
-                        return ;
-                    }
+            switch (vehicle.getTipo()) {
+                case "sedan" -> table.get(rep.getReparationId()).getSedan().add(rep.getAmount());
+                case "hatchback" -> table.get(rep.getReparationId()).getHatchback().add(rep.getAmount());
+                case "suv" -> table.get(rep.getReparationId()).getSuv().add(rep.getAmount());
+                case "pickup" -> table.get(rep.getReparationId()).getPickup().add(rep.getAmount());
+                case "furgoneta" -> table.get(rep.getReparationId()).getFurgoneta().add(rep.getAmount());
+                default -> {
+                    return ;
                 }
-                newRep1.getTotal().add(rep.getAmount());
-                table.replace(rep.getReparationId(),newRep1);
-            }else{
-                Rep1 newRep = switch(vehicle.getTipo()){
-                    case "sedan" -> new Rep1( rep.getReparation().getNombre(),
-                            new Register(1, rep.getAmount() ),
-                            new Register(),
-                            new Register(),
-                            new Register(),
-                            new Register(),
-                            new Register(1, rep.getAmount()));
-                    case "hatchback" -> new Rep1( rep.getReparation().getNombre(),
-                            new Register(),
-                            new Register(1, rep.getAmount() ),
-                            new Register(),
-                            new Register(),
-                            new Register(),
-                            new Register(1, rep.getAmount()));
-                    case "suv" -> new Rep1( rep.getReparation().getNombre(),
-                            new Register(),
-                            new Register(),
-                            new Register(1, rep.getAmount() ),
-                            new Register(),
-                            new Register(),
-                            new Register(1, rep.getAmount()));
-                    case "pickup" -> new Rep1( rep.getReparation().getNombre(),
-                            new Register(),
-                            new Register(),
-                            new Register(),
-                            new Register(1, rep.getAmount() ),
-                            new Register(),
-                            new Register(1, rep.getAmount()));
-                    case "furgoneta" -> new Rep1( rep.getReparation().getNombre(),
-                            new Register(),
-                            new Register(),
-                            new Register(),
-                            new Register(),
-                            new Register(1, rep.getAmount() ),
-                            new Register(1, rep.getAmount()));
-                    default -> null;
-                };
-                if(newRep == null) return;
-                table.put(rep.getReparationId(),
-                            newRep);
             }
+            table.get(rep.getReparationId()).getTotal().add(rep.getAmount());
         });
         return table;
     }
@@ -110,7 +76,6 @@ public class RepService {
         });
 
         String url = "http://MICRO3/reparation/byDate?month="+month+"&year="+year;
-        //String url = ip + "recibos/reparation/byDate?month=" + month + "&year=" + year;
         try {
             List<RegReparation> reparations = restTemplate.exchange(
                     url,

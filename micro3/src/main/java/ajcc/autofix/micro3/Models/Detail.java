@@ -14,5 +14,4 @@ public class Detail {
     private String description;
     private int value;
     private float percent;
-
 }

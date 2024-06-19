@@ -1,7 +1,9 @@
 package ajcc.autofix.micro3.Controllers;
 
+import ajcc.autofix.micro3.Entities.FinalDetails;
 import ajcc.autofix.micro3.Entities.Receipt;
 import ajcc.autofix.micro3.Entities.RegReparation;
+import ajcc.autofix.micro3.Models.Detail;
 import ajcc.autofix.micro3.Services.ReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,8 +67,8 @@ public class ReceiptController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> deliver(@PathVariable Long id){
-        Receipt receipt = receiptService.delivered(id);
+    public ResponseEntity<?> deliver(@PathVariable Long id, @RequestBody List<FinalDetails> finalDetails){
+        Receipt receipt = receiptService.delivered(id, finalDetails);
         if(receipt == null)
             return new ResponseEntity<>("No hay Recibo con el ID entregado", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(receipt, HttpStatus.OK);

@@ -17,4 +17,14 @@ public class Rep1 {
     private Register furgoneta;
 
     private Register total;
+
+    public Rep1(String name) {
+        this.name = name;
+        sedan = new Register();
+        hatchback = new Register();
+        suv = new Register();
+        pickup = new Register();
+        furgoneta = new Register();
+        total = new Register();
+    }
 }
