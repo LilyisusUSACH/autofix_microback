@@ -24,7 +24,7 @@ spring:
               - PUT
               - DELETE
             allowedHeaders: "*"
-            allowCredentials: true
+            allowCredentials: false
       discovery:
         locator:
           enabled: true
